@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 
 export default function MinhaConta() {
   const [user, setUser] = useState<any>(null);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,6 +16,15 @@ export default function MinhaConta() {
         return;
       }
       setUser(user);
+
+      // Busca assinaturas do usuário
+      const { data: subs } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('email', user.email?.toLowerCase())
+        .eq('status', 'active');
+
+      setSubscriptions(subs || []);
       setLoading(false);
     };
     getUser();
@@ -25,6 +35,12 @@ export default function MinhaConta() {
     window.location.href = '/';
   };
 
+  const hasSubscription = (productName: string) => {
+    return subscriptions.some(sub => 
+      sub.product_name?.toLowerCase().includes(productName.toLowerCase())
+    );
+  };
+
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F6F1EC' }}>
@@ -32,6 +48,36 @@ export default function MinhaConta() {
       </main>
     );
   }
+
+  const lines = [
+    { 
+      name: 'Inner Garden', 
+      slug: 'inner-garden',
+      desc: 'Autoconhecimento e cuidado emocional',
+      color: 'rgba(215,237,221,0.3)', 
+      border: '#B8D9C0',
+      seal: '/seal-inner-garden.png',
+      link: 'https://go.hotmart.com/T103665431V'
+    },
+    { 
+      name: 'Secret Chapters', 
+      slug: 'secret-chapters',
+      desc: 'Romances intensos e emocionantes',
+      color: 'rgba(250,221,230,0.3)', 
+      border: '#D9A8B2',
+      seal: '/seal-secrets.png',
+      link: 'https://go.hotmart.com/C103665282D'
+    },
+    { 
+      name: 'Mirrors', 
+      slug: 'mirrors',
+      desc: 'Filosofia e grandes ideias',
+      color: 'rgba(234,223,207,0.3)', 
+      border: 'rgba(200,174,125,0.5)',
+      seal: '/seal-mirrors.png',
+      link: 'https://go.hotmart.com/V103665744N'
+    },
+  ];
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#F6F1EC' }}>
@@ -51,7 +97,7 @@ export default function MinhaConta() {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="font-serif text-3xl mb-2" style={{ color: '#C8AE7D' }}>
-          Olá, bem-vinda! 💕
+          Olá, bem-vinda!
         </h1>
         <p className="mb-8" style={{ color: 'rgba(23,23,23,0.6)' }}>{user?.email}</p>
 
@@ -59,51 +105,49 @@ export default function MinhaConta() {
         <h2 className="font-serif text-2xl mb-6" style={{ color: '#171717' }}>Suas Linhas de Leitura</h2>
         
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Inner Garden */}
-          <div className="rounded-2xl p-6 border-2" style={{ backgroundColor: 'rgba(215,237,221,0.3)', borderColor: '#B8D9C0' }}>
-            <img src="/seal-inner-garden.png" alt="Inner Garden" className="w-16 h-16 mx-auto mb-4" />
-            <h3 className="font-serif text-xl text-center mb-2" style={{ color: '#171717' }}>Inner Garden</h3>
-            <p className="text-center text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Autoconhecimento e cuidado emocional</p>
-            <div className="text-center">
-              <span className="inline-block px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'rgba(184,217,192,0.5)', color: '#171717' }}>
-                🔒 Assine para acessar
-              </span>
-            </div>
-          </div>
-
-          {/* Secret Chapters */}
-          <div className="rounded-2xl p-6 border-2" style={{ backgroundColor: 'rgba(250,221,230,0.3)', borderColor: '#D9A8B2' }}>
-            <img src="/seal-secrets.png" alt="Secret Chapters" className="w-16 h-16 mx-auto mb-4" />
-            <h3 className="font-serif text-xl text-center mb-2" style={{ color: '#171717' }}>Secret Chapters</h3>
-            <p className="text-center text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Romances intensos e emocionantes</p>
-            <div className="text-center">
-              <span className="inline-block px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'rgba(217,168,178,0.5)', color: '#171717' }}>
-                🔒 Assine para acessar
-              </span>
-            </div>
-          </div>
-
-          {/* Mirrors */}
-          <div className="rounded-2xl p-6 border-2" style={{ backgroundColor: 'rgba(234,223,207,0.3)', borderColor: 'rgba(200,174,125,0.5)' }}>
-            <img src="/seal-mirrors.png" alt="Mirrors" className="w-16 h-16 mx-auto mb-4" />
-            <h3 className="font-serif text-xl text-center mb-2" style={{ color: '#171717' }}>Mirrors</h3>
-            <p className="text-center text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Filosofia e grandes ideias</p>
-            <div className="text-center">
-              <span className="inline-block px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'rgba(200,174,125,0.3)', color: '#171717' }}>
-                🔒 Assine para acessar
-              </span>
-            </div>
-          </div>
+          {lines.map((line) => {
+            const hasAccess = hasSubscription(line.name);
+            
+            return (
+              <div key={line.slug} className="rounded-2xl p-6 border-2" style={{ backgroundColor: line.color, borderColor: line.border }}>
+                <img src={line.seal} alt={line.name} className="w-16 h-16 mx-auto mb-4" />
+                <h3 className="font-serif text-xl text-center mb-2" style={{ color: '#171717' }}>{line.name}</h3>
+                <p className="text-center text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>{line.desc}</p>
+                <div className="text-center">
+                  {hasAccess ? (
+                    <a 
+                      href={`/app/${line.slug}`}
+                      className="inline-block w-full py-2 rounded-full text-sm font-medium hover:opacity-90"
+                      style={{ backgroundColor: line.border, color: '#171717' }}
+                    >
+                      Acessar conteúdo
+                    </a>
+                  ) : (
+                    <a 
+                      href={line.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block w-full py-2 rounded-full text-sm hover:opacity-90"
+                      style={{ backgroundColor: 'rgba(0,0,0,0.05)', color: 'rgba(23,23,23,0.6)' }}
+                    >
+                      Assinar - R$29,90/mês
+                    </a>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* CTA para assinar */}
-        <div className="mt-12 text-center rounded-2xl p-8" style={{ backgroundColor: 'rgba(250,221,230,0.2)' }}>
-          <h3 className="font-serif text-xl mb-4" style={{ color: '#C8AE7D' }}>Quer desbloquear as linhas de leitura?</h3>
-          <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Escolha sua linha e faça parte do nosso salão de leitura</p>
-          <a href="/#join" className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
-            Ver planos - R$29,90/mês
-          </a>
-        </div>
+        {subscriptions.length === 0 && (
+          <div className="mt-12 text-center rounded-2xl p-8" style={{ backgroundColor: 'rgba(250,221,230,0.2)' }}>
+            <h3 className="font-serif text-xl mb-4" style={{ color: '#C8AE7D' }}>Você ainda não tem nenhuma assinatura ativa</h3>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Escolha sua linha e faça parte do nosso clube de leitura</p>
+            <a href="/#lines" className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
+              Ver linhas de leitura
+            </a>
+          </div>
+        )}
       </div>
     </main>
   );
