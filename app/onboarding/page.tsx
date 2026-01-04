@@ -1,354 +1,403 @@
-export default function Home() {
-  return (
-    <main>
-      <Header />
-      <Hero />
-      <AboutAndIsForYou />
-      <ReadingLines />
-      <BooksOfTheMonth />
-      <HowItWorks />
-      <FAQ />
-      <FinalCTA />
-      <Footer />
-    </main>
-  );
-}
+'use client';
 
-function Header() {
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 py-4 px-6" style={{ backgroundColor: 'rgba(246,241,236,0.95)', backdropFilter: 'blur(8px)' }}>
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-        <a href="/" className="flex items-center gap-3">
-          <img src="/logo.png" alt="Lory-Marie Club" className="w-10 h-10 rounded-full" />
-        </a>
-        <nav className="hidden md:flex items-center gap-8 text-sm">
-          <a href="#about" className="transition-colors hover:opacity-70" style={{ color: '#171717' }}>Nosso Clube</a>
-          <a href="#lines" className="transition-colors hover:opacity-70" style={{ color: '#171717' }}>Linhas de Leitura</a>
-          <a href="#books" className="transition-colors hover:opacity-70" style={{ color: '#171717' }}>Livros do Mês</a>
-          <a href="#how" className="transition-colors hover:opacity-70" style={{ color: '#171717' }}>Como Funciona</a>
-          <a href="#faq" className="transition-colors hover:opacity-70" style={{ color: '#171717' }}>FAQ</a>
-        </nav>
-        <div className="flex items-center gap-4">
-          <a href="/login" className="text-sm transition-colors hover:opacity-70" style={{ color: '#C8AE7D' }}>Login</a>
-          <a href="#lines" className="text-sm px-5 py-2 rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Entrar no Clube</a>
-        </div>
-      </div>
-    </header>
-  );
-}
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
-function Hero() {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 pt-20" style={{ backgroundColor: '#F6F1EC' }}>
-      <div className="absolute inset-0 overflow-hidden">
-        <img src="/hero-books.png" alt="" className="w-full h-full object-cover opacity-30" />
-        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(246,241,236,0.7)' }} />
-      </div>
-      <div className="relative z-10 max-w-3xl mx-auto text-center">
-        <p className="text-sm tracking-widest uppercase mb-4" style={{ color: '#D9A8B2' }}>Lory-Marie Club – Salão de Leitura</p>
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl leading-tight mb-6" style={{ color: '#171717' }}>
-          Um salão de leitura para <span style={{ color: '#D9A8B2' }}>corações</span> que amam histórias.
-        </h1>
-        <p className="text-lg mb-10 max-w-xl mx-auto" style={{ color: 'rgba(23,23,23,0.7)' }}>
-          Um clube do livro íntimo e feminino onde cada livro é tratado como um pequeno ritual de autocuidado.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#lines" className="w-full sm:w-auto text-center font-medium px-8 py-3.5 rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Entrar no Salão de Leitura</a>
-          <a href="#lines" className="w-full sm:w-auto text-center text-sm transition-colors hover:opacity-70" style={{ color: '#C8AE7D' }}>Ver as linhas de leitura →</a>
-        </div>
-        <div className="mt-8 animate-bounce">
-          <span style={{ color: '#C8AE7D' }}>↓</span>
-        </div>
-      </div>
-    </section>
-  );
-}
+export default function OnboardingPage() {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    seeking: '',
+    storyType: '',
+    readingTime: '',
+    clubExperience: '',
+    preferredLine: '',
+    dreamBooks: '',
+    howFound: '',
+  });
 
-function AboutAndIsForYou() {
-  const items = [
-    "você quer voltar a ler com carinho, sem pressão ou metas impossíveis.",
-    "você sente falta de conversar sobre livros e, ao mesmo tempo, sobre a sua própria vida.",
-    "você ama histórias que curam, romances que fazem chorar e ideias que fazem pensar.",
-    "você procura um espaço delicado, seguro e feminino só para mulheres.",
+  useEffect(() => {
+    const handleEmailConfirmation = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const tokenHash = params.get('token_hash');
+      const type = params.get('type');
+      
+      if (tokenHash && type === 'signup') {
+        await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: 'signup'
+        });
+        window.history.replaceState({}, '', '/onboarding');
+      }
+    };
+    handleEmailConfirmation();
+  }, []);
+
+  const totalSteps = 10;
+
+  const updateForm = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const nextStep = () => setStep(step + 1);
+  const prevStep = () => setStep(step - 1);
+
+  const seekingOptions = [
+    { value: 'conhecimento', label: 'Expandir conhecimento e cultura', desc: 'Aprender coisas novas através da leitura' },
+    { value: 'grupo', label: 'Um grupo de mulheres', desc: 'Conexão e amizades verdadeiras' },
+    { value: 'reconexao', label: 'Reconexão comigo mesma', desc: 'Um tempo só meu, de autocuidado' },
+    { value: 'menos-redes', label: 'Menos tempo nas redes sociais', desc: 'Trocar a tela por páginas' },
+    { value: 'outro', label: 'Outro', desc: 'Tenho meus próprios motivos' },
   ];
 
-  return (
-    <section id="about" className="py-24 px-4" style={{ backgroundColor: '#F6F1EC' }}>
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="rounded-3xl p-8 sm:p-10" style={{ backgroundColor: 'rgba(234,223,207,0.5)', boxShadow: '0 2px 12px rgba(200,174,125,0.1)' }}>
-            <h2 className="font-serif text-3xl text-center mb-6" style={{ color: '#C8AE7D' }}>Nosso Clube</h2>
-            <div className="space-y-4 text-center leading-relaxed" style={{ color: 'rgba(23,23,23,0.8)' }}>
-              <p>O Lory-Marie Club nasceu como um refúgio emocional: um clube do livro íntimo e feminino onde os livros são tratados como pequenos rituais de autocuidado.</p>
-              <p>Aqui não há pressa. Cada encontro é uma pausa gentil para ler, sentir, conversar e guardar memórias – como quem escreve num diário, dobra cartas antigas ou guarda fitas de seda numa caixa especial.</p>
-            </div>
-            <p className="text-center text-sm mt-6 font-medium" style={{ color: '#D9A8B2' }}>Encontros mensais online · 1h–1h30</p>
-          </div>
+  const storyTypeOptions = [
+    { value: 'cuidado', label: 'Histórias de cura e autocuidado' },
+    { value: 'romance', label: 'Romances que fazem o coração acelerar' },
+    { value: 'suspense', label: 'Tramas envolventes e misteriosas' },
+    { value: 'filosofia', label: 'Reflexões profundas sobre a vida' },
+    { value: 'classicos', label: 'Clássicos que marcaram gerações' },
+    { value: 'varios', label: 'Um pouco de tudo, depende do momento' },
+  ];
 
-          <div className="rounded-3xl p-8 sm:p-10" style={{ backgroundColor: 'rgba(250,221,230,0.4)', boxShadow: '0 2px 12px rgba(200,174,125,0.1)' }}>
-            <h2 className="font-serif text-3xl text-center mb-6" style={{ color: '#C8AE7D' }}>É para você se...</h2>
-            <ul className="space-y-4">
-              {items.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center">
-                    <svg className="w-4 h-4" style={{ color: '#D9A8B2' }} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  <span className="leading-relaxed text-sm" style={{ color: 'rgba(23,23,23,0.8)' }}>{item}</span>
-                </li>
+  const readingTimeOptions = [
+    { value: '15min', label: '15 minutinhos por dia', desc: 'Pequenos momentos fazem diferença' },
+    { value: '30min', label: 'Cerca de 30 minutos', desc: 'Um tempinho dedicado à leitura' },
+    { value: '1hora', label: 'Uma hora ou mais', desc: 'Adoro mergulhar nas histórias' },
+    { value: 'fds', label: 'Só nos fins de semana', desc: 'Minha rotina não permite durante a semana' },
+    { value: 'irregular', label: 'Varia muito', desc: 'Depende da fase da vida' },
+  ];
+
+  const clubExperienceOptions = [
+    { value: 'nunca', label: 'Nunca participei', desc: 'Será minha primeira vez' },
+    { value: 'ja', label: 'Já participei de um', desc: 'Tenho experiência com encontros' },
+    { value: 'varios', label: 'Já participei de vários', desc: 'Adoro a experiência de clube' },
+  ];
+
+  const lineOptions = [
+    { value: 'inner-garden', label: 'Inner Garden', desc: 'Autoconhecimento, calma e cuidado emocional. Para quem busca se reconectar consigo mesma.', color: 'rgba(215,237,221,0.5)', border: '#B8D9C0', seal: '/seal-inner-garden.png' },
+    { value: 'secret-chapters', label: 'Secret Chapters', desc: 'Romances intensos e emocionantes. Para quem ama sentir o coração acelerar.', color: 'rgba(250,221,230,0.5)', border: '#D9A8B2', seal: '/seal-secrets.png' },
+    { value: 'mirrors', label: 'Mirrors', desc: 'Filosofia, clássicos e grandes ideias. Para quem ama refletir sobre a vida.', color: 'rgba(234,223,207,0.5)', border: '#C8AE7D', seal: '/seal-mirrors.png' },
+  ];
+
+  const howFoundOptions = [
+    { value: 'instagram', label: 'Instagram' },
+    { value: 'tiktok', label: 'TikTok' },
+    { value: 'indicacao', label: 'Indicação de uma amiga' },
+    { value: 'google', label: 'Pesquisa no Google' },
+    { value: 'outro', label: 'Outro' },
+  ];
+
+  const getLineRecommendation = () => {
+    return lineOptions.find(l => l.value === formData.preferredLine);
+  };
+
+  return (
+    <main className="min-h-screen flex items-center justify-center px-4 py-12" style={{ backgroundColor: '#F6F1EC' }}>
+      <div className="w-full max-w-lg">
+        {/* Progress */}
+        {step < 10 && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-medium" style={{ color: '#D9A8B2' }}>Passo {step} de {totalSteps}</span>
+              <a href="/minha-conta" className="text-xs hover:opacity-70" style={{ color: 'rgba(23,23,23,0.4)' }}>Pular</a>
+            </div>
+            <div className="h-1 rounded-full" style={{ backgroundColor: 'rgba(217,168,178,0.2)' }}>
+              <div className="h-1 rounded-full transition-all duration-500" style={{ backgroundColor: '#D9A8B2', width: `${(step / totalSteps) * 100}%` }} />
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: Nome */}
+        {step === 1 && (
+          <div className="text-center">
+            <img src="/logo.png" alt="Lory-Marie Club" className="w-20 h-20 mx-auto mb-6 rounded-full" />
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Bem-vinda ao Clube de Leitura</h1>
+            <p className="mb-8" style={{ color: 'rgba(23,23,23,0.6)' }}>Estamos felizes em te conhecer. Como podemos te chamar?</p>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => updateForm('name', e.target.value)}
+              placeholder="Seu nome"
+              className="w-full px-6 py-4 rounded-2xl border-2 text-center text-lg focus:outline-none mb-6"
+              style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
+            />
+            <button
+              onClick={nextStep}
+              disabled={!formData.name.trim()}
+              className="w-full py-4 rounded-full font-medium transition-all hover:opacity-90 disabled:opacity-40"
+              style={{ backgroundColor: '#EADFCF', color: '#171717' }}
+            >
+              Continuar
+            </button>
+          </div>
+        )}
+
+        {/* Step 2: Idade */}
+        {step === 2 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Prazer, {formData.name}</h1>
+            <p className="mb-8" style={{ color: 'rgba(23,23,23,0.6)' }}>Qual a sua idade?</p>
+            <input
+              type="number"
+              value={formData.age}
+              onChange={(e) => updateForm('age', e.target.value)}
+              placeholder="Sua idade"
+              min="13"
+              max="99"
+              className="w-full px-6 py-4 rounded-2xl border-2 text-center text-lg focus:outline-none mb-6"
+              style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
+            />
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.age} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: O que busca */}
+        {step === 3 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>O que você busca, {formData.name}?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Escolha o que mais ressoa com você</p>
+            <div className="space-y-3 mb-6">
+              {seekingOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => updateForm('seeking', option.value)}
+                  className="w-full p-4 rounded-2xl border-2 text-left transition-all"
+                  style={{ 
+                    backgroundColor: formData.seeking === option.value ? 'rgba(250,221,230,0.4)' : 'white',
+                    borderColor: formData.seeking === option.value ? '#D9A8B2' : 'rgba(217,168,178,0.3)'
+                  }}
+                >
+                  <span className="font-medium block" style={{ color: '#171717' }}>{option.label}</span>
+                  <span className="text-sm" style={{ color: 'rgba(23,23,23,0.5)' }}>{option.desc}</span>
+                </button>
               ))}
-            </ul>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.seeking} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+        )}
 
-function ReadingLines() {
-  const lines = [
-    {
-      name: "Inner Garden",
-      subtitle: "Autocuidado & Autoconhecimento",
-      description: "Livros que ajudam a cultivar a calma, entender as emoções e cuidar de si mesma com mais carinho.",
-      color: "rgba(215,237,221,0.4)",
-      borderColor: "#B8D9C0",
-      seal: "/seal-inner-garden.png",
-      link: "https://go.hotmart.com/T103665431V"
-    },
-    {
-      name: "Secret Chapters",
-      subtitle: "Romance & Emoção",
-      description: "Histórias de amor que fazem o coração acelerar, suspirar e, às vezes, chorar de emoção.",
-      color: "rgba(250,221,230,0.4)",
-      borderColor: "#D9A8B2",
-      seal: "/seal-secrets.png",
-      link: "https://go.hotmart.com/C103665282D"
-    },
-    {
-      name: "Mirrors",
-      subtitle: "Filosofia & Reflexão",
-      description: "Clássicos e obras que convidam a pensar sobre a vida, o mundo e quem somos.",
-      color: "rgba(234,223,207,0.4)",
-      borderColor: "rgba(200,174,125,0.5)",
-      seal: "/seal-mirrors.png",
-      link: "https://go.hotmart.com/V103665744N"
-    }
-  ];
-
-  return (
-    <section id="lines" className="py-24 px-4" style={{ backgroundColor: '#F6F1EC' }}>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-sm tracking-widest uppercase mb-3" style={{ color: '#D9A8B2' }}>Escolha sua jornada</p>
-          <h2 className="font-serif text-4xl mb-4" style={{ color: '#C8AE7D' }}>Linhas de Leitura</h2>
-          <p className="max-w-2xl mx-auto" style={{ color: 'rgba(23,23,23,0.7)' }}>Três caminhos, três formas de sentir. Escolha a linha que mais ressoa com você neste momento.</p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {lines.map((line, index) => (
-            <div key={index} className="rounded-3xl p-8 border-2 transition-all hover:shadow-lg" style={{ backgroundColor: line.color, borderColor: line.borderColor }}>
-              <div className="flex justify-center mb-6">
-                <img src={line.seal} alt={line.name} className="w-20 h-20" />
-              </div>
-              <h3 className="font-serif text-2xl text-center mb-2" style={{ color: '#171717' }}>{line.name}</h3>
-              <p className="text-center text-sm mb-4" style={{ color: '#D9A8B2' }}>{line.subtitle}</p>
-              <p className="text-center text-sm mb-6 leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>{line.description}</p>
-              <div className="text-center">
-                <p className="text-lg font-medium mb-4" style={{ color: '#C8AE7D' }}>R$29,90<span className="text-sm font-normal">/mês</span></p>
-                <a href={line.link} target="_blank" rel="noopener noreferrer" className="inline-block w-full py-3 rounded-full text-sm font-medium transition-all hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
-                  Assinar {line.name}
-                </a>
-              </div>
+        {/* Step 4: Tipo de história */}
+        {step === 4 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Que tipo de história você mais gosta?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Aquela que te faz perder a noção do tempo</p>
+            <div className="space-y-3 mb-6">
+              {storyTypeOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => updateForm('storyType', option.value)}
+                  className="w-full p-4 rounded-2xl border-2 transition-all"
+                  style={{ 
+                    backgroundColor: formData.storyType === option.value ? 'rgba(250,221,230,0.4)' : 'white',
+                    borderColor: formData.storyType === option.value ? '#D9A8B2' : 'rgba(217,168,178,0.3)'
+                  }}
+                >
+                  <span style={{ color: '#171717' }}>{option.label}</span>
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
-
-        <p className="text-center mt-12 text-sm" style={{ color: 'rgba(23,23,23,0.5)' }}>
-          Você pode assinar mais de uma linha e participar de todos os encontros.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function BooksOfTheMonth() {
-  const books = [
-    {
-      line: "Inner Garden",
-      title: "Livro de Janeiro",
-      image: "/book-inner-garden.PNG",
-      color: "rgba(215,237,221,0.4)"
-    },
-    {
-      line: "Secret Chapters",
-      title: "Livro de Janeiro",
-      image: "/book-secrets.PNG",
-      color: "rgba(250,221,230,0.4)"
-    },
-    {
-      line: "Mirrors",
-      title: "Livro de Janeiro",
-      image: "/book-mirrors.PNG",
-      color: "rgba(234,223,207,0.4)"
-    }
-  ];
-
-  return (
-    <section id="books" className="py-24 px-4" style={{ backgroundColor: 'rgba(250,221,230,0.2)' }}>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-sm tracking-widest uppercase mb-3" style={{ color: '#D9A8B2' }}>Janeiro 2026</p>
-          <h2 className="font-serif text-4xl mb-4" style={{ color: '#C8AE7D' }}>Livros do Mês</h2>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {books.map((book, index) => (
-            <div key={index} className="rounded-3xl p-6 text-center" style={{ backgroundColor: book.color }}>
-              <p className="text-sm font-medium mb-4" style={{ color: '#D9A8B2' }}>{book.line}</p>
-              <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 shadow-lg">
-                <img src={book.image} alt={book.title} className="w-full h-full object-cover" />
-              </div>
-              <p className="text-sm" style={{ color: 'rgba(23,23,23,0.6)' }}>{book.title}</p>
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.storyType} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function HowItWorks() {
-  const steps = [
-    {
-      number: "01",
-      title: "Escolha sua linha",
-      description: "Assine a linha que mais combina com você: Inner Garden, Secret Chapters ou Mirrors."
-    },
-    {
-      number: "02",
-      title: "Receba o livro do mês",
-      description: "No início de cada mês, você descobre qual livro vamos ler juntas."
-    },
-    {
-      number: "03",
-      title: "Leia no seu ritmo",
-      description: "Você tem o mês inteiro para ler, sem pressa e sem pressão."
-    },
-    {
-      number: "04",
-      title: "Participe do encontro",
-      description: "No final do mês, nos reunimos online para conversar sobre o livro e sobre a vida."
-    }
-  ];
-
-  return (
-    <section id="how" className="py-24 px-4" style={{ backgroundColor: '#F6F1EC' }}>
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-sm tracking-widest uppercase mb-3" style={{ color: '#D9A8B2' }}>Simples assim</p>
-          <h2 className="font-serif text-4xl mb-4" style={{ color: '#C8AE7D' }}>Como Funciona</h2>
-        </div>
-
-        <div className="space-y-8">
-          {steps.map((step, index) => (
-            <div key={index} className="flex items-start gap-6">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(250,221,230,0.5)' }}>
-                <span className="font-serif text-lg" style={{ color: '#C8AE7D' }}>{step.number}</span>
-              </div>
-              <div>
-                <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>{step.title}</h3>
-                <p style={{ color: 'rgba(23,23,23,0.7)' }}>{step.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FAQ() {
-  const faqs = [
-    {
-      question: "Como são os encontros?",
-      answer: "Os encontros acontecem uma vez por mês, online (Google Meet), duram entre 1h e 1h30, e são um espaço seguro para conversar sobre o livro e sobre a vida."
-    },
-    {
-      question: "Preciso comprar o livro?",
-      answer: "Sim, cada participante adquire seu próprio livro. Sempre escolhemos edições acessíveis e disponíveis nas principais livrarias."
-    },
-    {
-      question: "Posso assinar mais de uma linha?",
-      answer: "Sim! Você pode assinar quantas linhas quiser e participar de todos os encontros."
-    },
-    {
-      question: "E se eu não conseguir terminar o livro?",
-      answer: "Sem problemas! O encontro é um espaço acolhedor, mesmo que você não tenha terminado a leitura."
-    },
-    {
-      question: "Como cancelo minha assinatura?",
-      answer: "Você pode cancelar a qualquer momento, sem burocracia, direto pela plataforma de pagamento."
-    }
-  ];
-
-  return (
-    <section id="faq" className="py-24 px-4" style={{ backgroundColor: 'rgba(234,223,207,0.3)' }}>
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-sm tracking-widest uppercase mb-3" style={{ color: '#D9A8B2' }}>Dúvidas?</p>
-          <h2 className="font-serif text-4xl mb-4" style={{ color: '#C8AE7D' }}>Perguntas Frequentes</h2>
-        </div>
-
-        <div className="space-y-6">
-          {faqs.map((faq, index) => (
-            <div key={index} className="rounded-2xl p-6" style={{ backgroundColor: 'rgba(246,241,236,0.8)' }}>
-              <h3 className="font-medium mb-2" style={{ color: '#171717' }}>{faq.question}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FinalCTA() {
-  return (
-    <section className="py-24 px-4" style={{ backgroundColor: '#F6F1EC' }}>
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="font-serif text-4xl mb-6" style={{ color: '#C8AE7D' }}>Pronta para entrar no Salão de Leitura?</h2>
-        <p className="mb-10" style={{ color: 'rgba(23,23,23,0.7)' }}>Escolha sua linha e faça parte de um clube do livro feito com carinho, para mulheres que amam histórias.</p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#lines" className="w-full sm:w-auto text-center font-medium px-8 py-3.5 rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Ver as linhas de leitura</a>
-          <a href="https://wa.me/5517992247704" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto text-center font-medium border-2 px-8 py-3.5 rounded-full transition-all hover:opacity-70" style={{ color: '#171717', borderColor: '#D9A8B2' }}>Falar conosco primeiro</a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="py-12 px-4" style={{ backgroundColor: '#171717' }}>
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full overflow-hidden mb-6">
-            <img src="/logo.png" alt="Lory-Marie Club" className="w-full h-full object-cover" />
           </div>
-          <p className="font-serif text-xl mb-2" style={{ color: '#F6F1EC' }}>Lory-Marie Club – Salão de Leitura</p>
-          <p className="text-sm mb-8" style={{ color: 'rgba(246,241,236,0.6)' }}>Clube do livro feminino online · Encontros mensais</p>
-          <div className="flex items-center gap-6 text-sm">
-            <a href="https://instagram.com/lorymarieclub" target="_blank" rel="noopener noreferrer" className="transition-colors hover:opacity-70" style={{ color: 'rgba(246,241,236,0.8)' }}>Instagram</a>
-            <span style={{ color: 'rgba(246,241,236,0.3)' }}>·</span>
-            <a href="https://wa.me/5517992247704" target="_blank" rel="noopener noreferrer" className="transition-colors hover:opacity-70" style={{ color: 'rgba(246,241,236,0.8)' }}>WhatsApp</a>
-            <span style={{ color: 'rgba(246,241,236,0.3)' }}>·</span>
-            <a href="/login" className="transition-colors hover:opacity-70" style={{ color: 'rgba(246,241,236,0.8)' }}>Login</a>
+        )}
+
+        {/* Step 5: Tempo de leitura */}
+        {step === 5 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Quanto tempo por dia você pode dedicar à leitura?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Não existe resposta errada</p>
+            <div className="space-y-3 mb-6">
+              {readingTimeOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => updateForm('readingTime', option.value)}
+                  className="w-full p-4 rounded-2xl border-2 text-left transition-all"
+                  style={{ 
+                    backgroundColor: formData.readingTime === option.value ? 'rgba(250,221,230,0.4)' : 'white',
+                    borderColor: formData.readingTime === option.value ? '#D9A8B2' : 'rgba(217,168,178,0.3)'
+                  }}
+                >
+                  <span className="font-medium block" style={{ color: '#171717' }}>{option.label}</span>
+                  <span className="text-sm" style={{ color: 'rgba(23,23,23,0.5)' }}>{option.desc}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.readingTime} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
+            </div>
           </div>
-          <p className="text-xs mt-8" style={{ color: 'rgba(246,241,236,0.4)' }}>© 2026 Lory-Marie Club. Todos os direitos reservados.</p>
-        </div>
+        )}
+
+        {/* Step 6: Experiência com clube */}
+        {step === 6 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Já participou de um clube do livro?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Queremos saber mais sobre você</p>
+            <div className="space-y-3 mb-6">
+              {clubExperienceOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => updateForm('clubExperience', option.value)}
+                  className="w-full p-4 rounded-2xl border-2 text-left transition-all"
+                  style={{ 
+                    backgroundColor: formData.clubExperience === option.value ? 'rgba(250,221,230,0.4)' : 'white',
+                    borderColor: formData.clubExperience === option.value ? '#D9A8B2' : 'rgba(217,168,178,0.3)'
+                  }}
+                >
+                  <span className="font-medium block" style={{ color: '#171717' }}>{option.label}</span>
+                  <span className="text-sm" style={{ color: 'rgba(23,23,23,0.5)' }}>{option.desc}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.clubExperience} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 7: Linha preferida */}
+        {step === 7 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Com qual linha você mais se identifica?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Cada linha é uma jornada única</p>
+            <div className="space-y-4 mb-6">
+              {lineOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => updateForm('preferredLine', option.value)}
+                  className="w-full p-5 rounded-2xl border-2 transition-all text-left"
+                  style={{ 
+                    backgroundColor: formData.preferredLine === option.value ? option.color : 'white',
+                    borderColor: option.border,
+                    borderWidth: formData.preferredLine === option.value ? '3px' : '2px'
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    <img src={option.seal} alt={option.label} className="w-14 h-14 flex-shrink-0" />
+                    <div>
+                      <span className="font-serif text-xl block mb-1" style={{ color: '#171717' }}>{option.label}</span>
+                      <span className="text-sm leading-snug" style={{ color: 'rgba(23,23,23,0.6)' }}>{option.desc}</span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.preferredLine} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 8: Livros dos sonhos */}
+        {step === 8 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Tem algum livro que você sonha em discutir?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Pode ser um que já leu, ou um da sua lista de desejos</p>
+            <textarea
+              value={formData.dreamBooks}
+              onChange={(e) => updateForm('dreamBooks', e.target.value)}
+              placeholder="Escreva aqui os livros que você gostaria de discutir com outras mulheres..."
+              className="w-full px-5 py-4 rounded-2xl border-2 focus:outline-none mb-6 resize-none h-32"
+              style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
+            />
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} className="flex-1 py-4 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Continuar</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 9: Como conheceu */}
+        {step === 9 && (
+          <div className="text-center">
+            <h1 className="font-serif text-3xl mb-3" style={{ color: '#C8AE7D' }}>Como você conheceu o Lory-Marie Club?</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>Isso nos ajuda a alcançar mais mulheres como você</p>
+            <div className="space-y-3 mb-6">
+              {howFoundOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => updateForm('howFound', option.value)}
+                  className="w-full p-4 rounded-2xl border-2 transition-all"
+                  style={{ 
+                    backgroundColor: formData.howFound === option.value ? 'rgba(250,221,230,0.4)' : 'white',
+                    borderColor: formData.howFound === option.value ? '#D9A8B2' : 'rgba(217,168,178,0.3)'
+                  }}
+                >
+                  <span style={{ color: '#171717' }}>{option.label}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={prevStep} className="px-6 py-4 rounded-full border-2 hover:opacity-70" style={{ borderColor: '#D9A8B2', color: '#D9A8B2' }}>Voltar</button>
+              <button onClick={nextStep} disabled={!formData.howFound} className="flex-1 py-4 rounded-full font-medium hover:opacity-90 disabled:opacity-40" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Ver meu resultado</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 10: Card Final */}
+        {step === 10 && (
+          <div className="text-center">
+            <div className="rounded-3xl overflow-hidden mb-8" style={{ boxShadow: '0 8px 32px rgba(200,174,125,0.2)' }}>
+              <div className="py-8 px-6" style={{ background: 'linear-gradient(135deg, rgba(250,221,230,0.6) 0%, rgba(234,223,207,0.6) 100%)' }}>
+                {getLineRecommendation() && (
+                  <img src={getLineRecommendation()?.seal} alt="" className="w-24 h-24 mx-auto mb-4" />
+                )}
+                <p className="text-sm font-medium tracking-wide uppercase mb-1" style={{ color: '#D9A8B2' }}>Sua linha</p>
+                <h2 className="font-serif text-3xl" style={{ color: '#C8AE7D' }}>{getLineRecommendation()?.label}</h2>
+              </div>
+              
+              <div className="py-8 px-6" style={{ backgroundColor: 'white' }}>
+                <p className="font-serif text-2xl mb-6" style={{ color: '#171717' }}>
+                  {formData.name}, esse é o seu momento.
+                </p>
+                <div className="space-y-4 text-left max-w-sm mx-auto">
+                  <p style={{ color: 'rgba(23,23,23,0.7)' }}>
+                    Um tempo só seu, para se reconectar com as histórias que fazem seu coração bater mais forte.
+                  </p>
+                  <p style={{ color: 'rgba(23,23,23,0.7)' }}>
+                    Um espaço seguro, entre mulheres que, assim como você, acreditam no poder transformador da leitura.
+                  </p>
+                  <p style={{ color: 'rgba(23,23,23,0.7)' }}>
+                    Sua melhor versão está a uma página de distância.
+                  </p>
+                </div>
+                
+                <div className="flex items-center justify-center gap-3 my-8">
+                  <div className="h-px w-12" style={{ backgroundColor: 'rgba(200,174,125,0.3)' }} />
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#C8AE7D' }} />
+                  <div className="h-px w-12" style={{ backgroundColor: 'rgba(200,174,125,0.3)' }} />
+                </div>
+                
+                <p className="font-serif text-lg italic" style={{ color: '#C8AE7D' }}>
+                  "Ler é encontrar-se em palavras que outra pessoa escreveu."
+                </p>
+              </div>
+            </div>
+            
+            <h2 className="font-serif text-xl mb-3" style={{ color: '#171717' }}>Pronta para começar?</h2>
+            <p className="mb-6 text-sm" style={{ color: 'rgba(23,23,23,0.6)' }}>Seu lugar no Clube de Leitura te espera</p>
+            
+            <a href="/#lines" className="block w-full py-4 rounded-full font-medium text-center hover:opacity-90 mb-4" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
+              Entrar no Clube
+            </a>
+            <a href="/minha-conta" className="text-sm hover:opacity-70 block" style={{ color: '#D9A8B2' }}>
+              Voltar para minha conta
+            </a>
+          </div>
+        )}
       </div>
-    </footer>
+    </main>
   );
 }
