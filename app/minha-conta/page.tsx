@@ -15,6 +15,14 @@ export default function MinhaConta() {
         window.location.href = '/login';
         return;
       }
+
+      // Verifica se já fez onboarding
+      const didOnboarding = localStorage.getItem('lory-marie-onboarding-complete');
+      if (!didOnboarding) {
+        window.location.href = '/onboarding';
+        return;
+      }
+
       setUser(user);
 
       // Busca assinaturas do usuário

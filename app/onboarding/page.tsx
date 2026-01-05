@@ -92,6 +92,11 @@ export default function OnboardingPage() {
     return lineOptions.find(l => l.value === formData.preferredLine);
   };
 
+  const handleFinishOnboarding = () => {
+    localStorage.setItem('lory-marie-onboarding-complete', 'true');
+    window.location.href = '/minha-conta';
+  };
+
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12" style={{ backgroundColor: '#F6F1EC' }}>
       <div className="w-full max-w-lg">
@@ -389,11 +394,15 @@ export default function OnboardingPage() {
             <h2 className="font-serif text-xl mb-3" style={{ color: '#171717' }}>Pronta para começar?</h2>
             <p className="mb-6 text-sm" style={{ color: 'rgba(23,23,23,0.6)' }}>Seu lugar no Clube de Leitura te espera</p>
             
-            <a href="/#lines" className="block w-full py-4 rounded-full font-medium text-center hover:opacity-90 mb-4" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
-              Entrar no Clube
-            </a>
-            <a href="/minha-conta" className="text-sm hover:opacity-70 block" style={{ color: '#D9A8B2' }}>
-              Voltar para minha conta
+            <button 
+              onClick={handleFinishOnboarding}
+              className="w-full py-4 rounded-full font-medium text-center hover:opacity-90 mb-4" 
+              style={{ backgroundColor: '#EADFCF', color: '#171717' }}
+            >
+              Ir para minha conta
+            </button>
+            <a href="/" className="text-sm hover:opacity-70 block" style={{ color: '#D9A8B2' }}>
+              Voltar para o início
             </a>
           </div>
         )}
