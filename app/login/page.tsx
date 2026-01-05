@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 export default function LoginPage() {
@@ -10,6 +10,13 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('criar') === 'true') {
+      setIsSignUp(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +29,7 @@ export default function LoginPage() {
           email, 
           password,
           options: {
-            emailRedirectTo: 'https://lory-marie-club.vercel.app/onboarding'
+            emailRedirectTo: 'https://lory-marie-club.vercel.app/auth/callback'
           }
         });
         if (error) throw error;

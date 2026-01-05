@@ -44,7 +44,7 @@ function Header() {
             <a href="/login" className="text-sm font-medium px-4 py-2 rounded-full border transition-all hover:opacity-70" style={{ color: '#171717', borderColor: '#D9A8B2' }}>
               Login
             </a>
-            <a href="#join" className="text-sm font-medium px-6 py-2.5 rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
+            <a href="/login?criar=true" className="text-sm font-medium px-6 py-2.5 rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
               Entrar no Clube
             </a>
           </div>
@@ -70,7 +70,7 @@ function Header() {
               ))}
               <div className="flex flex-col gap-2 px-4 pt-4" style={{ borderTop: '1px solid rgba(217,168,178,0.2)' }}>
                 <a href="/login" className="text-sm font-medium py-2" style={{ color: '#171717' }}>Login</a>
-                <a hhref="/login" className="text-sm font-medium px-6 py-2.5 rounded-full text-center" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Entrar no Clube</a>
+                <a href="/login?criar=true" className="text-sm font-medium px-6 py-2.5 rounded-full text-center" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Entrar no Clube</a>
               </div>
             </nav>
           </div>
