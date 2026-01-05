@@ -19,12 +19,13 @@ export default function LoginPage() {
     try {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ 
-  email, 
-  password,
-  options: {
-    emailRedirectTo: 'https://lory-marie-club.vercel.app/onboarding'
-  }
-});
+          email, 
+          password,
+          options: {
+            emailRedirectTo: 'https://lory-marie-club.vercel.app/onboarding'
+          }
+        });
+        if (error) throw error;
         setShowConfirmation(true);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
