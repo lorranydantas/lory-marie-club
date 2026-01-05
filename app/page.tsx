@@ -96,7 +96,7 @@ function Hero() {
           Um clube do livro íntimo e feminino onde cada livro é tratado como um pequeno ritual de autocuidado.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#about" className="w-full sm:w-auto text-center font-medium px-8 py-4 rounded-full transition-all text-lg shadow-lg hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
+          <a href="/login" className="w-full sm:w-auto text-center font-medium px-8 py-4 rounded-full transition-all text-lg shadow-lg hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>
             Entrar no Salão de Leitura
           </a>
           <a href="#reading-lines" className="font-medium transition-colors hover:opacity-70" style={{ color: '#C8AE7D' }}>
@@ -294,7 +294,7 @@ function FinalCTA() {
         <h2 className="font-serif text-3xl sm:text-4xl mb-6" style={{ color: '#171717' }}>Pronta para entrar no Salão de Leitura?</h2>
         <p className="text-lg mb-10 leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>Escolha sua linha de leitura, mantenha uma xícara de chá por perto e venha compartilhar histórias, ideias e memórias conosco.</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="https://hotmart-placeholder-link" className="w-full sm:w-auto text-center font-medium px-10 py-4 rounded-full transition-all text-lg shadow-lg hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Entrar no Clube</a>
+          <a href="/login" className="w-full sm:w-auto text-center font-medium px-10 py-4 rounded-full transition-all text-lg shadow-lg hover:opacity-90" style={{ backgroundColor: '#EADFCF', color: '#171717' }}>Entrar no Clube</a>
           <a href="https://wa.me/5517992247704" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto text-center font-medium border-2 px-8 py-3.5 rounded-full transition-all hover:opacity-70" style={{ color: '#171717', borderColor: '#D9A8B2' }}>Falar conosco primeiro</a>
         </div>
         <p className="text-sm mt-8" style={{ color: '#D9A8B2' }}>R$ 29,90/mês por linha de leitura</p>
