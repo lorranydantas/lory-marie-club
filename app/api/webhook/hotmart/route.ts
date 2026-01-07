@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const supabase = createClient(
   'https://ylhzxbzfgskcgsgowubp.supabase.co',
-  'sb_publishable_7-Ot-sy99CWbCa_fslP_qA_gsrGHQU8'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlsaHp4YnpmZ3NrY2dzZ293dWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwMzg0NzYsImV4cCI6MjA1MTYxNDQ3Nn0.Q9h1FhB4CZNLMCm0W8uyPNdL1Oc3FfJZRkFkOpc6kM8'
 );
 
 export async function POST(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const email = body.data?.buyer?.email || body.buyer?.email;
     const productName = body.data?.product?.name || body.product?.name;
     const hotmartId = body.data?.purchase?.transaction || body.purchase?.transaction;
-    const status = body.event || 'purchase';
+    const event = body.event || 'PURCHASE_COMPLETE';
 
     if (!email) {
       return NextResponse.json({ error: 'Email não encontrado' }, { status: 400 });
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         email: email.toLowerCase(),
         product_name: productName,
         hotmart_id: hotmartId,
-        status: status === 'PURCHASE_COMPLETE' ? 'active' : status
+        status: 'active'
       });
 
     if (error) {
