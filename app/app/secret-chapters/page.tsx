@@ -156,109 +156,164 @@ export default function SecretChaptersPage() {
           </div>
         </div>
 
-        {/* Caderno de Reflexões */}
-        <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.2)', border: '2px solid #D9A8B2' }}>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="font-serif text-2xl" style={{ color: '#171717' }}>Meu Caderno de Reflexões</h2>
-              <p className="text-sm" style={{ color: 'rgba(23,23,23,0.5)' }}>Anote para compartilhar no encontro</p>
+        {/* Caderno de Reflexões - Estilo Elegante */}
+        <div className="relative mb-8">
+          {/* Lombada do caderno */}
+          <div className="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg" style={{ backgroundColor: '#D9A8B2' }} />
+          
+          {/* Caderno */}
+          <div 
+            className="ml-2 rounded-2xl overflow-hidden"
+            style={{ 
+              backgroundColor: '#FFFEF9',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(217,168,178,0.3)',
+            }}
+          >
+            {/* Capa do caderno */}
+            <div className="px-8 py-6" style={{ backgroundColor: 'rgba(250,221,230,0.3)', borderBottom: '2px solid #D9A8B2' }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="font-serif text-2xl" style={{ color: '#8B6B72' }}>Meu Caderno de Reflexões</h2>
+                  <p className="text-sm italic" style={{ color: 'rgba(139,107,114,0.6)' }}>Anote para compartilhar no encontro</p>
+                </div>
+                {!isEditing ? (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="px-5 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-all"
+                    style={{ backgroundColor: '#D9A8B2', color: '#5C4347' }}
+                  >
+                    ✎ Editar
+                  </button>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setNotebook(savedNotebook);
+                        setIsEditing(false);
+                      }}
+                      className="px-4 py-2 rounded-full text-sm font-medium hover:opacity-70 transition-all"
+                      style={{ border: '1px solid #D9A8B2', color: '#8B6B72' }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={saveNotebook}
+                      disabled={saving || !hasChanges}
+                      className="px-5 py-2 rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+                      style={{ backgroundColor: '#D9A8B2', color: '#5C4347' }}
+                    >
+                      {saving ? 'Salvando...' : '✓ Salvar'}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-            {!isEditing ? (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"
-                style={{ backgroundColor: '#D9A8B2', color: '#171717' }}
-              >
-                Editar
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setNotebook(savedNotebook);
-                    setIsEditing(false);
-                  }}
-                  className="px-4 py-2 rounded-full text-sm font-medium hover:opacity-70"
-                  style={{ border: '1px solid #D9A8B2', color: '#171717' }}
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={saveNotebook}
-                  disabled={saving || !hasChanges}
-                  className="px-6 py-2 rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-50"
-                  style={{ backgroundColor: '#D9A8B2', color: '#171717' }}
-                >
-                  {saving ? 'Salvando...' : 'Salvar'}
-                </button>
-              </div>
-            )}
-          </div>
 
-          {/* Citações Favoritas */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>
-              Citações Favoritas
-            </label>
-            {isEditing ? (
-              <textarea
-                value={notebook.citacoes}
-                onChange={(e) => setNotebook({...notebook, citacoes: e.target.value})}
-                placeholder="Copie aqui as frases do livro que mais te tocaram..."
-                className="w-full h-28 p-4 rounded-2xl border-2 focus:outline-none resize-none"
-                style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
-              />
-            ) : (
-              <div className="p-4 rounded-2xl min-h-[70px]" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-                <p style={{ color: notebook.citacoes ? '#171717' : 'rgba(23,23,23,0.3)', whiteSpace: 'pre-wrap' }}>
-                  {notebook.citacoes || 'Nenhuma citação adicionada ainda...'}
-                </p>
+            {/* Páginas do caderno */}
+            <div className="p-8" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(217,168,178,0.3) 31px, rgba(217,168,178,0.3) 32px)' }}>
+              
+              {/* Citações Favoritas */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-3">
+                  <span style={{ color: '#D9A8B2' }}>❝</span>
+                  <label className="font-serif text-lg" style={{ color: '#8B6B72' }}>
+                    Citações Favoritas
+                  </label>
+                </div>
+                {isEditing ? (
+                  <textarea
+                    value={notebook.citacoes}
+                    onChange={(e) => setNotebook({...notebook, citacoes: e.target.value})}
+                    placeholder="Copie aqui as frases do livro que mais te tocaram..."
+                    className="w-full h-32 p-4 rounded-xl border-2 focus:outline-none resize-none transition-all"
+                    style={{ 
+                      backgroundColor: 'rgba(250,221,230,0.1)', 
+                      borderColor: '#D9A8B2', 
+                      color: '#171717',
+                      fontStyle: 'italic'
+                    }}
+                  />
+                ) : (
+                  <div className="p-4 rounded-xl min-h-[80px]" style={{ backgroundColor: 'rgba(250,221,230,0.1)' }}>
+                    <p className="italic" style={{ color: notebook.citacoes ? '#8B6B72' : 'rgba(139,107,114,0.3)', whiteSpace: 'pre-wrap' }}>
+                      {notebook.citacoes || 'Nenhuma citação adicionada ainda...'}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Reflexões */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>
-              Minhas Reflexões
-            </label>
-            {isEditing ? (
-              <textarea
-                value={notebook.reflexoes}
-                onChange={(e) => setNotebook({...notebook, reflexoes: e.target.value})}
-                placeholder="O que o livro te fez pensar? Como se conecta com sua vida?"
-                className="w-full h-28 p-4 rounded-2xl border-2 focus:outline-none resize-none"
-                style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
-              />
-            ) : (
-              <div className="p-4 rounded-2xl min-h-[70px]" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-                <p style={{ color: notebook.reflexoes ? '#171717' : 'rgba(23,23,23,0.3)', whiteSpace: 'pre-wrap' }}>
-                  {notebook.reflexoes || 'Nenhuma reflexão adicionada ainda...'}
-                </p>
+              {/* Divisor elegante */}
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(217,168,178,0.4)' }} />
+                <span style={{ color: '#D9A8B2' }}>♡</span>
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(217,168,178,0.4)' }} />
               </div>
-            )}
-          </div>
 
-          {/* Perguntas para o Encontro */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>
-              Perguntas para o Encontro
-            </label>
-            {isEditing ? (
-              <textarea
-                value={notebook.perguntas}
-                onChange={(e) => setNotebook({...notebook, perguntas: e.target.value})}
-                placeholder="O que você gostaria de discutir com o grupo?"
-                className="w-full h-28 p-4 rounded-2xl border-2 focus:outline-none resize-none"
-                style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
-              />
-            ) : (
-              <div className="p-4 rounded-2xl min-h-[70px]" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-                <p style={{ color: notebook.perguntas ? '#171717' : 'rgba(23,23,23,0.3)', whiteSpace: 'pre-wrap' }}>
-                  {notebook.perguntas || 'Nenhuma pergunta adicionada ainda...'}
-                </p>
+              {/* Reflexões */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-3">
+                  <span style={{ color: '#D9A8B2' }}>✦</span>
+                  <label className="font-serif text-lg" style={{ color: '#8B6B72' }}>
+                    Minhas Reflexões
+                  </label>
+                </div>
+                {isEditing ? (
+                  <textarea
+                    value={notebook.reflexoes}
+                    onChange={(e) => setNotebook({...notebook, reflexoes: e.target.value})}
+                    placeholder="O que o livro te fez pensar? Como se conecta com sua vida?"
+                    className="w-full h-32 p-4 rounded-xl border-2 focus:outline-none resize-none transition-all"
+                    style={{ 
+                      backgroundColor: 'rgba(250,221,230,0.1)', 
+                      borderColor: '#D9A8B2', 
+                      color: '#171717' 
+                    }}
+                  />
+                ) : (
+                  <div className="p-4 rounded-xl min-h-[80px]" style={{ backgroundColor: 'rgba(250,221,230,0.1)' }}>
+                    <p style={{ color: notebook.reflexoes ? '#8B6B72' : 'rgba(139,107,114,0.3)', whiteSpace: 'pre-wrap' }}>
+                      {notebook.reflexoes || 'Nenhuma reflexão adicionada ainda...'}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Divisor elegante */}
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(217,168,178,0.4)' }} />
+                <span style={{ color: '#D9A8B2' }}>♡</span>
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(217,168,178,0.4)' }} />
+              </div>
+
+              {/* Perguntas para o Encontro */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span style={{ color: '#D9A8B2' }}>?</span>
+                  <label className="font-serif text-lg" style={{ color: '#8B6B72' }}>
+                    Perguntas para o Encontro
+                  </label>
+                </div>
+                {isEditing ? (
+                  <textarea
+                    value={notebook.perguntas}
+                    onChange={(e) => setNotebook({...notebook, perguntas: e.target.value})}
+                    placeholder="O que você gostaria de discutir com o grupo?"
+                    className="w-full h-32 p-4 rounded-xl border-2 focus:outline-none resize-none transition-all"
+                    style={{ 
+                      backgroundColor: 'rgba(250,221,230,0.1)', 
+                      borderColor: '#D9A8B2', 
+                      color: '#171717' 
+                    }}
+                  />
+                ) : (
+                  <div className="p-4 rounded-xl min-h-[80px]" style={{ backgroundColor: 'rgba(250,221,230,0.1)' }}>
+                    <p style={{ color: notebook.perguntas ? '#8B6B72' : 'rgba(139,107,114,0.3)', whiteSpace: 'pre-wrap' }}>
+                      {notebook.perguntas || 'Nenhuma pergunta adicionada ainda...'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -270,7 +325,7 @@ export default function SecretChaptersPage() {
             <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Billie Eilish & Khalid</p>
             <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia intensa e envolvente que combina com a atmosfera sombria de Verity</p>
             <a 
-              href="https://open.spotify.com/track/0u2P5u6lvoDfwTYjAADbn4" 
+              href="https://open.spotify.com/intl-pt/album/2sBB17RXTamvj7Ncps15AK" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-block px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"
