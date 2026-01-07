@@ -7,6 +7,19 @@ export default function SecretChaptersPage() {
   const [user, setUser] = useState<any>(null);
   const [hasAccess, setHasAccess] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  
+  const [notebook, setNotebook] = useState({
+    citacoes: '',
+    reflexoes: '',
+    perguntas: ''
+  });
+  const [savedNotebook, setSavedNotebook] = useState({
+    citacoes: '',
+    reflexoes: '',
+    perguntas: ''
+  });
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -24,14 +37,31 @@ export default function SecretChaptersPage() {
         .eq('status', 'active');
 
       const access = subs?.some(sub => 
-        sub.product_name?.toLowerCase().includes('secret')
+        sub.product_name?.toLowerCase().includes('secret chapters')
       );
       
       setHasAccess(access || false);
       setLoading(false);
+
+      const saved = localStorage.getItem(`notebook-secret-chapters-${user.email}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setNotebook(parsed);
+        setSavedNotebook(parsed);
+      }
     };
     checkAccess();
   }, []);
+
+  const saveNotebook = () => {
+    setSaving(true);
+    localStorage.setItem(`notebook-secret-chapters-${user.email}`, JSON.stringify(notebook));
+    setSavedNotebook(notebook);
+    setIsEditing(false);
+    setTimeout(() => setSaving(false), 1000);
+  };
+
+  const hasChanges = JSON.stringify(notebook) !== JSON.stringify(savedNotebook);
 
   if (loading) {
     return (
@@ -83,26 +113,25 @@ export default function SecretChaptersPage() {
 
         {/* Livro do Mês */}
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.3)' }}>
-          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro 2026</h2>
+          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro/Fevereiro 2026</h2>
           <div className="flex flex-col md:flex-row items-center gap-8">
             <img src="/book-secrets.PNG" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
             <div>
-              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>Título do Livro</h3>
-              <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Autor do Livro</p>
+              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>Verity</h3>
+              <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Colleen Hoover</p>
               <p className="leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>
-                Descrição do livro e por que escolhemos ele para este mês. 
-                Uma breve sinopse que desperte a curiosidade sem dar spoilers.
+                Um thriller psicológico de tirar o fôlego. Lowen é uma escritora em dificuldades que aceita terminar os livros de Verity, uma autora de sucesso que sofreu um acidente. Ao vasculhar o escritório de Verity, Lowen encontra um manuscrito que revela segredos sombrios. Uma história que vai te deixar sem fôlego até a última página.
               </p>
             </div>
           </div>
         </div>
 
         {/* Encontro */}
-        <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(215,237,221,0.2)' }}>
+        <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(234,223,207,0.2)' }}>
           <h2 className="font-serif text-2xl mb-4 text-center" style={{ color: '#171717' }}>Próximo Encontro</h2>
           <div className="text-center">
-            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Sábado, 25 de Janeiro</p>
-            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>às 18h (horário de Brasília)</p>
+            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Quarta-feira, 12 de Fevereiro</p>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>às 19h (horário de Brasília)</p>
             <a href="#" className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#D9A8B2', color: '#171717' }}>
               Entrar no encontro (Google Meet)
             </a>
@@ -110,18 +139,145 @@ export default function SecretChaptersPage() {
           </div>
         </div>
 
-        {/* Materiais */}
+        {/* Grupo do WhatsApp */}
+        <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.15)' }}>
+          <h2 className="font-serif text-2xl mb-4 text-center" style={{ color: '#171717' }}>Grupo do WhatsApp</h2>
+          <div className="text-center">
+            <p className="mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Participe do nosso grupo para trocar ideias, compartilhar citações e se conectar com outras leitoras</p>
+            <a 
+              href="https://chat.whatsapp.com/EhmFkExcMrKBlNn8Y56ryd" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90"
+              style={{ backgroundColor: '#D9A8B2', color: '#171717' }}
+            >
+              Entrar no grupo
+            </a>
+          </div>
+        </div>
+
+        {/* Caderno de Reflexões */}
+        <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.2)', border: '2px solid #D9A8B2' }}>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="font-serif text-2xl" style={{ color: '#171717' }}>Meu Caderno de Reflexões</h2>
+              <p className="text-sm" style={{ color: 'rgba(23,23,23,0.5)' }}>Anote para compartilhar no encontro</p>
+            </div>
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"
+                style={{ backgroundColor: '#D9A8B2', color: '#171717' }}
+              >
+                Editar
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setNotebook(savedNotebook);
+                    setIsEditing(false);
+                  }}
+                  className="px-4 py-2 rounded-full text-sm font-medium hover:opacity-70"
+                  style={{ border: '1px solid #D9A8B2', color: '#171717' }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={saveNotebook}
+                  disabled={saving || !hasChanges}
+                  className="px-6 py-2 rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                  style={{ backgroundColor: '#D9A8B2', color: '#171717' }}
+                >
+                  {saving ? 'Salvando...' : 'Salvar'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Citações Favoritas */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>
+              Citações Favoritas
+            </label>
+            {isEditing ? (
+              <textarea
+                value={notebook.citacoes}
+                onChange={(e) => setNotebook({...notebook, citacoes: e.target.value})}
+                placeholder="Copie aqui as frases do livro que mais te tocaram..."
+                className="w-full h-28 p-4 rounded-2xl border-2 focus:outline-none resize-none"
+                style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
+              />
+            ) : (
+              <div className="p-4 rounded-2xl min-h-[70px]" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
+                <p style={{ color: notebook.citacoes ? '#171717' : 'rgba(23,23,23,0.3)', whiteSpace: 'pre-wrap' }}>
+                  {notebook.citacoes || 'Nenhuma citação adicionada ainda...'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Reflexões */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>
+              Minhas Reflexões
+            </label>
+            {isEditing ? (
+              <textarea
+                value={notebook.reflexoes}
+                onChange={(e) => setNotebook({...notebook, reflexoes: e.target.value})}
+                placeholder="O que o livro te fez pensar? Como se conecta com sua vida?"
+                className="w-full h-28 p-4 rounded-2xl border-2 focus:outline-none resize-none"
+                style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
+              />
+            ) : (
+              <div className="p-4 rounded-2xl min-h-[70px]" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
+                <p style={{ color: notebook.reflexoes ? '#171717' : 'rgba(23,23,23,0.3)', whiteSpace: 'pre-wrap' }}>
+                  {notebook.reflexoes || 'Nenhuma reflexão adicionada ainda...'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Perguntas para o Encontro */}
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>
+              Perguntas para o Encontro
+            </label>
+            {isEditing ? (
+              <textarea
+                value={notebook.perguntas}
+                onChange={(e) => setNotebook({...notebook, perguntas: e.target.value})}
+                placeholder="O que você gostaria de discutir com o grupo?"
+                className="w-full h-28 p-4 rounded-2xl border-2 focus:outline-none resize-none"
+                style={{ backgroundColor: 'white', borderColor: '#D9A8B2', color: '#171717' }}
+              />
+            ) : (
+              <div className="p-4 rounded-2xl min-h-[70px]" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
+                <p style={{ color: notebook.perguntas ? '#171717' : 'rgba(23,23,23,0.3)', whiteSpace: 'pre-wrap' }}>
+                  {notebook.perguntas || 'Nenhuma pergunta adicionada ainda...'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Música Indicada */}
         <div className="rounded-3xl p-8" style={{ backgroundColor: 'rgba(234,223,207,0.2)' }}>
-          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Materiais de Apoio</h2>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-              <span style={{ color: '#171717' }}>Guia de reflexões para a leitura</span>
-              <span className="text-sm" style={{ color: 'rgba(23,23,23,0.4)' }}>Em breve</span>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-              <span style={{ color: '#171717' }}>Playlist do mês</span>
-              <span className="text-sm" style={{ color: 'rgba(23,23,23,0.4)' }}>Em breve</span>
-            </div>
+          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Música Indicada</h2>
+          <div className="text-center">
+            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>Lovely</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Billie Eilish & Khalid</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia intensa e envolvente que combina com a atmosfera sombria de Verity</p>
+            <a 
+              href="https://open.spotify.com/track/0u2P5u6lvoDfwTYjAADbn4" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"
+              style={{ backgroundColor: '#D9A8B2', color: '#171717' }}
+            >
+              Ouvir no Spotify
+            </a>
           </div>
         </div>
       </div>
