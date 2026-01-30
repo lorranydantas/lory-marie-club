@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from'../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -46,6 +48,25 @@ export default function LoginPage() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://lory-marie-club.vercel.app/redefinir-senha'
+      });
+      if (error) throw error;
+      setResetEmailSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Ocorreu um erro');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Tela de confirmação de cadastro
   if (showConfirmation) {
     return (
       <main className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#F6F1EC' }}>
@@ -72,6 +93,107 @@ export default function LoginPage() {
     );
   }
 
+  // Tela de email de recuperação enviado
+  if (resetEmailSent) {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#F6F1EC' }}>
+        <div className="w-full max-w-md text-center">
+          <div className="rounded-3xl p-10" style={{ backgroundColor: 'rgba(250,221,230,0.3)', boxShadow: '0 2px 12px rgba(200,174,125,0.1)' }}>
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(215,237,221,0.5)' }}>
+              <svg className="w-8 h-8" style={{ color: '#B8D9C0' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h1 className="font-serif text-2xl mb-3" style={{ color: '#C8AE7D' }}>Email enviado!</h1>
+            <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>
+              Enviamos um link para redefinir sua senha para <strong style={{ color: '#171717' }}>{email}</strong>
+            </p>
+            <p className="text-sm mb-8" style={{ color: 'rgba(23,23,23,0.5)' }}>
+              Verifique sua caixa de entrada e clique no link para criar uma nova senha.
+            </p>
+            <button 
+              onClick={() => { setResetEmailSent(false); setShowForgotPassword(false); }}
+              className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" 
+              style={{ backgroundColor: '#EADFCF', color: '#171717' }}
+            >
+              Voltar para o login
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Tela de esqueci minha senha
+  if (showForgotPassword) {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#F6F1EC' }}>
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <a href="/">
+              <img src="/logo.png" alt="Lory-Marie Club" className="w-20 h-20 mx-auto rounded-full mb-4" />
+            </a>
+            <h1 className="font-serif text-3xl" style={{ color: '#C8AE7D' }}>
+              Recuperar senha
+            </h1>
+            <p className="mt-2 text-sm" style={{ color: 'rgba(23,23,23,0.6)' }}>
+              Digite seu email e enviaremos um link para redefinir sua senha
+            </p>
+          </div>
+
+          <form onSubmit={handleForgotPassword} className="rounded-3xl p-8" style={{ backgroundColor: 'rgba(250,221,230,0.3)', boxShadow: '0 2px 12px rgba(200,174,125,0.1)' }}>
+            {error && (
+              <div className="mb-4 p-3 rounded-lg text-sm" style={{ backgroundColor: 'rgba(220,38,38,0.1)', color: '#DC2626' }}>
+                {error}
+              </div>
+            )}
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 focus:outline-none transition-colors"
+                style={{ backgroundColor: '#F6F1EC', borderColor: '#D9A8B2', color: '#171717' }}
+                placeholder="seu@email.com"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-full font-medium transition-all hover:opacity-90 disabled:opacity-50"
+              style={{ backgroundColor: '#EADFCF', color: '#171717' }}
+            >
+              {loading ? 'Enviando...' : 'Enviar link de recuperação'}
+            </button>
+
+            <p className="text-center mt-6 text-sm" style={{ color: 'rgba(23,23,23,0.6)' }}>
+              Lembrou a senha?{' '}
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(false)}
+                className="font-medium hover:opacity-70"
+                style={{ color: '#C8AE7D' }}
+              >
+                Voltar ao login
+              </button>
+            </p>
+          </form>
+
+          <p className="text-center mt-6">
+            <a href="/" className="text-sm hover:opacity-70" style={{ color: '#D9A8B2' }}>
+              ← Voltar para o início
+            </a>
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // Tela principal de login/cadastro
   return (
     <main className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#F6F1EC' }}>
       <div className="w-full max-w-md">
@@ -80,7 +202,7 @@ export default function LoginPage() {
             <img src="/logo.png" alt="Lory-Marie Club" className="w-20 h-20 mx-auto rounded-full mb-4" />
           </a>
           <h1 className="font-serif text-3xl" style={{ color: '#C8AE7D' }}>
-            {isSignUp ? 'Criar Conta' : 'Entrar no Clube de Leitura'}
+            {isSignUp ? 'Criar Conta' : 'Entrar no Clube'}
           </h1>
         </div>
 
@@ -104,7 +226,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="mb-6">
+          <div className="mb-2">
             <label className="block text-sm font-medium mb-2" style={{ color: '#171717' }}>Senha</label>
             <input
               type="password"
@@ -116,6 +238,21 @@ export default function LoginPage() {
               placeholder="••••••••"
             />
           </div>
+
+          {!isSignUp && (
+            <div className="mb-6 text-right">
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm hover:opacity-70"
+                style={{ color: '#C8AE7D' }}
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          )}
+
+          {isSignUp && <div className="mb-6" />}
 
           <button
             type="submit"
