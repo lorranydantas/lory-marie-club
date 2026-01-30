@@ -189,9 +189,9 @@ function ReadingLines() {
 
 function BooksOfTheMonth() {
   const books = [
-    { title: "Verity", author: "Colleen Hoover", line: "Secret Chapters", month: "Janeiro 2026", image: "/book-secrets.PNG", bgColor: 'rgba(250,221,230,0.3)' },
-    { title: "A Metamorfose", author: "Franz Kafka", line: "Mirrors", month: "Janeiro 2026", image: "/book-mirrors.PNG", bgColor: 'rgba(234,223,207,0.5)' },
-    { title: "As coisas que você só vê quando desacelera", author: "Haemin Sunim", line: "Inner Garden", month: "Janeiro 2026", image: "/book-inner-garden.PNG", bgColor: 'rgba(215,237,221,0.3)' },
+    { title: "É Assim Que Acaba", author: "Colleen Hoover", line: "Secret Chapters", month: "Fevereiro 2026", image: "/book-secrets-fev.png", bgColor: 'rgba(250,221,230,0.3)' },
+    { title: "A Morte de Ivan Ilitch", author: "Liev Tolstói", line: "Mirrors", month: "Fevereiro 2026", image: "/book-mirrors-fev.png", bgColor: 'rgba(234,223,207,0.5)' },
+    { title: "O Poder do Agora", author: "Eckhart Tolle", line: "Inner Garden", month: "Fevereiro 2026", image: "/book-inner-garden-fev.png", bgColor: 'rgba(215,237,221,0.3)' },
   ];
 
   return (
@@ -200,7 +200,7 @@ function BooksOfTheMonth() {
         <div className="text-center mb-4">
           <span className="text-sm font-medium uppercase tracking-wider" style={{ color: '#D9A8B2' }}>Livros do Mês</span>
         </div>
-        <h2 className="font-serif text-3xl sm:text-4xl text-center mb-16" style={{ color: '#C8AE7D' }}>Janeiro 2026</h2>
+        <h2 className="font-serif text-3xl sm:text-4xl text-center mb-16" style={{ color: '#C8AE7D' }}>Fevereiro 2026</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {books.map((book, index) => (
             <div key={index} className="rounded-3xl p-6 transition-shadow hover:shadow-lg overflow-hidden" style={{ backgroundColor: book.bgColor, boxShadow: '0 2px 12px rgba(200,174,125,0.1)' }}>
@@ -217,7 +217,6 @@ function BooksOfTheMonth() {
     </section>
   );
 }
-
 function HowItWorks() {
   const steps = [
     { number: "1", title: "Escolha sua(s) linha(s) de leitura", description: "Você escolhe Inner Garden, Secret Chapters, Mirrors – ou mais de uma, se quiser." },
