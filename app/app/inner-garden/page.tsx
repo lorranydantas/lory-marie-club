@@ -12,11 +12,19 @@ const booksHistory = [
     author: 'Haemin Sunim',
     music: 'River Flows in You - Yiruma',
     musicUrl: 'https://open.spotify.com/intl-pt/track/2agBDIr9MYDUducQPC1sFU'
+  },
+  {
+    month: '2026-02',
+    monthLabel: 'Fevereiro 2026',
+    book: 'O Poder do Agora',
+    author: 'Eckhart Tolle',
+    music: 'Holocene - Bon Iver',
+    musicUrl: 'https://open.spotify.com/intl-pt/track/6DESft0qm6RhoYf5wzeoGH'
   }
 ];
 
 // Mês atual
-const currentMonth = '2026-01';
+const currentMonth = '2026-02';
 const currentBook = booksHistory.find(b => b.month === currentMonth);
 
 export default function InnerGardenPage() {
@@ -148,14 +156,14 @@ export default function InnerGardenPage() {
 
         {/* Livro do Mês */}
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(215,237,221,0.3)' }}>
-          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro 2026</h2>
+          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Fevereiro 2026</h2>
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <img src="/book-inner-garden.PNG" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
+            <img src="/book-inner-garden-fev.png" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
             <div>
-              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>As coisas que você só vê quando desacelera</h3>
-              <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Haemin Sunim</p>
+              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>O Poder do Agora</h3>
+              <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Eckhart Tolle</p>
               <p className="leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>
-                Um convite gentil para pausar, respirar e olhar para dentro. Haemin Sunim, um dos líderes espirituais mais influentes da Coreia do Sul, nos guia com sabedoria e compaixão através das pressões do dia a dia, oferecendo insights sobre autocompaixão, relacionamentos e a arte de viver com mais leveza.
+                Um convite para viver no presente e silenciar o ruído mental. O livro propõe que grande parte do sofrimento humano nasce da desconexão com o agora — e mostra, de forma simples e profunda, como a presença pode transformar a relação com pensamentos, emoções e a própria vida.
               </p>
             </div>
           </div>
@@ -165,7 +173,7 @@ export default function InnerGardenPage() {
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.2)' }}>
           <h2 className="font-serif text-2xl mb-4 text-center" style={{ color: '#171717' }}>Próximo Encontro</h2>
           <div className="text-center">
-            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Terça-feira, 11 de Fevereiro</p>
+            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Terça-feira, 17 de Março</p>
             <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>às 19h (horário de Brasília)</p>
             <a href="#" className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#B8D9C0', color: '#171717' }}>
               Entrar no encontro (Google Meet)
@@ -206,7 +214,7 @@ export default function InnerGardenPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-serif text-2xl" style={{ color: '#4A5D4F' }}>Meu Caderno de Reflexões</h2>
-                  <p className="text-sm italic" style={{ color: 'rgba(74,93,79,0.6)' }}>Janeiro 2026 • Anote para compartilhar no encontro</p>
+                  <p className="text-sm italic" style={{ color: 'rgba(74,93,79,0.6)' }}>Fevereiro 2026 • Anote para compartilhar no encontro</p>
                 </div>
                 {!isEditing ? (
                   <button
@@ -358,7 +366,6 @@ export default function InnerGardenPage() {
                           className="absolute -top-1 left-1 w-6 h-2 rounded-t-md"
                           style={{ backgroundColor: '#9BC5A3' }}
                         />
-                        <span className="text-white text-sm font-serif">✦</span>
                       </div>
                       
                       {/* Info */}
@@ -418,18 +425,18 @@ export default function InnerGardenPage() {
                         </p>
                       )}
                       
-                     {/* Info do livro */}
-<div className="mt-6 pt-4 border-t" style={{ borderColor: 'rgba(184,217,192,0.3)' }}>
-  <a 
-    href={book.musicUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-xs hover:opacity-70 transition-all"
-    style={{ color: '#4A5D4F' }}
-  >
-    🎵 {book.music} → Ouvir no Spotify
-  </a>
-</div>
+                      {/* Info do livro */}
+                      <div className="mt-6 pt-4 border-t" style={{ borderColor: 'rgba(184,217,192,0.3)' }}>
+                        <a 
+                          href={book.musicUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs hover:opacity-70 transition-all"
+                          style={{ color: '#4A5D4F' }}
+                        >
+                          🎵 {book.music} → Ouvir no Spotify
+                        </a>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -442,11 +449,11 @@ export default function InnerGardenPage() {
         <div className="rounded-3xl p-8" style={{ backgroundColor: 'rgba(234,223,207,0.2)' }}>
           <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Música Indicada</h2>
           <div className="text-center">
-            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>River Flows in You</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Yiruma</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia de piano suave e contemplativa, perfeita para acompanhar sua leitura</p>
+            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>Holocene</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Bon Iver</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia introspectiva e etérea, perfeita para acompanhar sua leitura</p>
             <a 
-              href="https://open.spotify.com/intl-pt/track/2agBDIr9MYDUducQPC1sFU" 
+              href="https://open.spotify.com/intl-pt/track/6DESft0qm6RhoYf5wzeoGH" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-block px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"

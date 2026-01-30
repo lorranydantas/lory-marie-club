@@ -12,11 +12,19 @@ const booksHistory = [
     author: 'Franz Kafka',
     music: 'Gymnopédie No. 1 - Erik Satie',
     musicUrl: 'https://open.spotify.com/intl-pt/album/3neXwl7vEq2ZqIRxV3DwFp'
+  },
+  {
+    month: '2026-02',
+    monthLabel: 'Fevereiro 2026',
+    book: 'A Morte de Ivan Ilitch',
+    author: 'Liev Tolstói',
+    music: 'How to Disappear Completely - Radiohead',
+    musicUrl: 'https://open.spotify.com/intl-pt/track/2rtGaCAeYtmcIvuZsvgTf6'
   }
 ];
 
 // Mês atual
-const currentMonth = '2026-01';
+const currentMonth = '2026-02';
 const currentBook = booksHistory.find(b => b.month === currentMonth);
 
 export default function MirrorsPage() {
@@ -148,14 +156,14 @@ export default function MirrorsPage() {
 
         {/* Livro do Mês */}
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(234,223,207,0.3)' }}>
-          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro 2026</h2>
+          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Fevereiro 2026</h2>
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <img src="/book-mirrors.PNG" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
+            <img src="/book-mirrors-fev.png" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
             <div>
-              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>A Metamorfose</h3>
-              <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Franz Kafka</p>
+              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>A Morte de Ivan Ilitch</h3>
+              <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Liev Tolstói</p>
               <p className="leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>
-                Uma das obras mais marcantes da literatura mundial. Gregor Samsa acorda transformado em um inseto gigante e, a partir daí, Kafka nos conduz por uma reflexão profunda sobre alienação, identidade, família e o absurdo da existência. Uma leitura que nos faz questionar quem realmente somos e como nos relacionamos com o mundo ao redor.
+                Um clássico curto e poderoso sobre finitude, vaidade e o sentido da vida. Ao acompanhar os últimos dias de Ivan Ilitch, Tolstói expõe o vazio das convenções sociais, o medo da morte e a angústia de perceber — tarde demais — que se viveu de forma superficial. Uma leitura incômoda, silenciosa e profundamente humana, que funciona como espelho.
               </p>
             </div>
           </div>
@@ -165,7 +173,7 @@ export default function MirrorsPage() {
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.2)' }}>
           <h2 className="font-serif text-2xl mb-4 text-center" style={{ color: '#171717' }}>Próximo Encontro</h2>
           <div className="text-center">
-            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Quinta-feira, 13 de Fevereiro</p>
+            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Quinta-feira, 19 de Março</p>
             <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>às 19h (horário de Brasília)</p>
             <a href="#" className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#C8AE7D', color: '#171717' }}>
               Entrar no encontro (Google Meet)
@@ -206,7 +214,7 @@ export default function MirrorsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-serif text-2xl" style={{ color: '#6B5D4A' }}>Meu Caderno de Reflexões</h2>
-                  <p className="text-sm italic" style={{ color: 'rgba(107,93,74,0.6)' }}>Janeiro 2026 • Anote para compartilhar no encontro</p>
+                  <p className="text-sm italic" style={{ color: 'rgba(107,93,74,0.6)' }}>Fevereiro 2026 • Anote para compartilhar no encontro</p>
                 </div>
                 {!isEditing ? (
                   <button
@@ -441,11 +449,11 @@ export default function MirrorsPage() {
         <div className="rounded-3xl p-8" style={{ backgroundColor: 'rgba(250,221,230,0.15)' }}>
           <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Música Indicada</h2>
           <div className="text-center">
-            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>Gymnopédie No. 1</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Erik Satie</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma peça de piano introspectiva e melancólica, perfeita para acompanhar a leitura de Kafka</p>
+            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>How to Disappear Completely</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Radiohead</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia etérea e melancólica, perfeita para acompanhar a reflexão sobre finitude</p>
             <a 
-              href="https://open.spotify.com/intl-pt/album/3neXwl7vEq2ZqIRxV3DwFp" 
+              href="https://open.spotify.com/intl-pt/track/2rtGaCAeYtmcIvuZsvgTf6" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-block px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"

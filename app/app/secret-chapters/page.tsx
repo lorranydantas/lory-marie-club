@@ -12,11 +12,19 @@ const booksHistory = [
     author: 'Colleen Hoover',
     music: 'Lovely - Billie Eilish & Khalid',
     musicUrl: 'https://open.spotify.com/intl-pt/album/2sBB17RXTamvj7Ncps15AK'
+  },
+  {
+    month: '2026-02',
+    monthLabel: 'Fevereiro 2026',
+    book: 'É Assim Que Acaba',
+    author: 'Colleen Hoover',
+    music: 'Youth - Daughter',
+    musicUrl: 'https://open.spotify.com/intl-pt/track/6tqzOYuE3lrNVPDgtF3MjM'
   }
 ];
 
 // Mês atual
-const currentMonth = '2026-01';
+const currentMonth = '2026-02';
 const currentBook = booksHistory.find(b => b.month === currentMonth);
 
 export default function SecretChaptersPage() {
@@ -148,14 +156,14 @@ export default function SecretChaptersPage() {
 
         {/* Livro do Mês */}
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(250,221,230,0.3)' }}>
-          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro 2026</h2>
+          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Fevereiro 2026</h2>
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <img src="/book-secrets.PNG" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
+            <img src="/book-secrets-fev.png" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
             <div>
-              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>Verity</h3>
+              <h3 className="font-serif text-xl mb-2" style={{ color: '#171717' }}>É Assim Que Acaba</h3>
               <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Colleen Hoover</p>
               <p className="leading-relaxed" style={{ color: 'rgba(23,23,23,0.7)' }}>
-                Um thriller psicológico de tirar o fôlego. Lowen é uma escritora em dificuldades que aceita terminar os livros de Verity, uma autora de sucesso que sofreu um acidente. Ao vasculhar o escritório de Verity, Lowen encontra um manuscrito que revela segredos sombrios. Uma história que vai te deixar sem fôlego até a última página.
+                Um romance intenso sobre amor, escolhas difíceis e limites emocionais. A história acompanha Lily e revela, camada por camada, como nem todo amor é suficiente — e como romper ciclos também pode ser um ato de coragem.
               </p>
             </div>
           </div>
@@ -165,7 +173,7 @@ export default function SecretChaptersPage() {
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(234,223,207,0.2)' }}>
           <h2 className="font-serif text-2xl mb-4 text-center" style={{ color: '#171717' }}>Próximo Encontro</h2>
           <div className="text-center">
-            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Quarta-feira, 12 de Fevereiro</p>
+            <p className="text-lg mb-2" style={{ color: '#C8AE7D' }}>Quarta-feira, 18 de Março</p>
             <p className="mb-6" style={{ color: 'rgba(23,23,23,0.6)' }}>às 19h (horário de Brasília)</p>
             <a href="#" className="inline-block px-8 py-3 rounded-full font-medium hover:opacity-90" style={{ backgroundColor: '#D9A8B2', color: '#171717' }}>
               Entrar no encontro (Google Meet)
@@ -206,7 +214,7 @@ export default function SecretChaptersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-serif text-2xl" style={{ color: '#8B6B72' }}>Meu Caderno de Reflexões</h2>
-                  <p className="text-sm italic" style={{ color: 'rgba(139,107,114,0.6)' }}>Janeiro 2026 • Anote para compartilhar no encontro</p>
+                  <p className="text-sm italic" style={{ color: 'rgba(139,107,114,0.6)' }}>Fevereiro 2026 • Anote para compartilhar no encontro</p>
                 </div>
                 {!isEditing ? (
                   <button
@@ -441,11 +449,11 @@ export default function SecretChaptersPage() {
         <div className="rounded-3xl p-8" style={{ backgroundColor: 'rgba(234,223,207,0.2)' }}>
           <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Música Indicada</h2>
           <div className="text-center">
-            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>Lovely</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Billie Eilish & Khalid</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia intensa e envolvente que combina com a atmosfera sombria de Verity</p>
+            <p className="font-medium text-lg mb-1" style={{ color: '#171717' }}>Youth</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.6)' }}>Daughter</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(23,23,23,0.5)' }}>Uma melodia melancólica e intensa, perfeita para acompanhar sua leitura</p>
             <a 
-              href="https://open.spotify.com/intl-pt/album/2sBB17RXTamvj7Ncps15AK" 
+              href="https://open.spotify.com/intl-pt/track/6tqzOYuE3lrNVPDgtF3MjM" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-block px-6 py-2 rounded-full text-sm font-medium hover:opacity-90"
