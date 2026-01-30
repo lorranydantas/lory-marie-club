@@ -358,7 +358,7 @@ export default function InnerGardenPage() {
                           className="absolute -top-1 left-1 w-6 h-2 rounded-t-md"
                           style={{ backgroundColor: '#9BC5A3' }}
                         />
-                        <span className="text-white text-lg">📖</span>
+                        <span className="text-white text-sm font-serif">✦</span>
                       </div>
                       
                       {/* Info */}

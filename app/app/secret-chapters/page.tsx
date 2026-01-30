@@ -358,7 +358,6 @@ export default function SecretChaptersPage() {
                           className="absolute -top-1 left-1 w-6 h-2 rounded-t-md"
                           style={{ backgroundColor: '#C4939D' }}
                         />
-                        <span className="text-white text-lg">📖</span>
                       </div>
                       
                       {/* Info */}
