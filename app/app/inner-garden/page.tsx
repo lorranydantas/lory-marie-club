@@ -3,12 +3,29 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
+// Dados dos livros por mês
+const booksHistory = [
+  {
+    month: '2026-01',
+    monthLabel: 'Janeiro 2026',
+    book: 'As coisas que você só vê quando desacelera',
+    author: 'Haemin Sunim',
+    music: 'River Flows in You - Yiruma',
+    musicUrl: 'https://open.spotify.com/intl-pt/track/2agBDIr9MYDUducQPC1sFU'
+  }
+];
+
+// Mês atual
+const currentMonth = '2026-01';
+const currentBook = booksHistory.find(b => b.month === currentMonth);
+
 export default function InnerGardenPage() {
   const [user, setUser] = useState<any>(null);
   const [hasAccess, setHasAccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [openFolder, setOpenFolder] = useState<string | null>(null);
   
   const [notebook, setNotebook] = useState({
     citacoes: '',
@@ -20,6 +37,8 @@ export default function InnerGardenPage() {
     reflexoes: '',
     perguntas: ''
   });
+  
+  const [history, setHistory] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -43,25 +62,41 @@ export default function InnerGardenPage() {
       setHasAccess(access || false);
       setLoading(false);
 
-      const saved = localStorage.getItem(`notebook-inner-garden-${user.email}`);
+      // Carregar caderno atual
+      const saved = localStorage.getItem(`notebook-inner-garden-${user.email}-${currentMonth}`);
       if (saved) {
         const parsed = JSON.parse(saved);
         setNotebook(parsed);
         setSavedNotebook(parsed);
       }
+      
+      // Carregar histórico de todos os meses
+      const historyData: {[key: string]: any} = {};
+      booksHistory.forEach(book => {
+        const monthData = localStorage.getItem(`notebook-inner-garden-${user.email}-${book.month}`);
+        if (monthData) {
+          historyData[book.month] = JSON.parse(monthData);
+        }
+      });
+      setHistory(historyData);
     };
     checkAccess();
   }, []);
 
   const saveNotebook = () => {
     setSaving(true);
-    localStorage.setItem(`notebook-inner-garden-${user.email}`, JSON.stringify(notebook));
+    localStorage.setItem(`notebook-inner-garden-${user.email}-${currentMonth}`, JSON.stringify(notebook));
     setSavedNotebook(notebook);
+    setHistory(prev => ({ ...prev, [currentMonth]: notebook }));
     setIsEditing(false);
     setTimeout(() => setSaving(false), 1000);
   };
 
   const hasChanges = JSON.stringify(notebook) !== JSON.stringify(savedNotebook);
+  
+  const hasContent = (data: any) => {
+    return data && (data.citacoes || data.reflexoes || data.perguntas);
+  };
 
   if (loading) {
     return (
@@ -113,7 +148,7 @@ export default function InnerGardenPage() {
 
         {/* Livro do Mês */}
         <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(215,237,221,0.3)' }}>
-          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro/Fevereiro 2026</h2>
+          <h2 className="font-serif text-2xl mb-6 text-center" style={{ color: '#171717' }}>Livro do Mês - Janeiro 2026</h2>
           <div className="flex flex-col md:flex-row items-center gap-8">
             <img src="/book-inner-garden.PNG" alt="Livro do mês" className="w-48 rounded-xl shadow-lg" />
             <div>
@@ -156,12 +191,10 @@ export default function InnerGardenPage() {
           </div>
         </div>
 
-        {/* Caderno de Reflexões - Estilo Elegante */}
+        {/* Caderno de Reflexões Atual */}
         <div className="relative mb-8">
-          {/* Lombada do caderno */}
           <div className="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg" style={{ backgroundColor: '#B8D9C0' }} />
           
-          {/* Caderno */}
           <div 
             className="ml-2 rounded-2xl overflow-hidden"
             style={{ 
@@ -169,12 +202,11 @@ export default function InnerGardenPage() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(184,217,192,0.3)',
             }}
           >
-            {/* Capa do caderno */}
             <div className="px-8 py-6" style={{ backgroundColor: 'rgba(215,237,221,0.3)', borderBottom: '2px solid #B8D9C0' }}>
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-serif text-2xl" style={{ color: '#4A5D4F' }}>Meu Caderno de Reflexões</h2>
-                  <p className="text-sm italic" style={{ color: 'rgba(74,93,79,0.6)' }}>Anote para compartilhar no encontro</p>
+                  <p className="text-sm italic" style={{ color: 'rgba(74,93,79,0.6)' }}>Janeiro 2026 • Anote para compartilhar no encontro</p>
                 </div>
                 {!isEditing ? (
                   <button
@@ -209,16 +241,12 @@ export default function InnerGardenPage() {
               </div>
             </div>
 
-            {/* Páginas do caderno */}
             <div className="p-8" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(184,217,192,0.3) 31px, rgba(184,217,192,0.3) 32px)' }}>
               
-              {/* Citações Favoritas */}
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-3">
                   <span style={{ color: '#B8D9C0' }}>❝</span>
-                  <label className="font-serif text-lg" style={{ color: '#4A5D4F' }}>
-                    Citações Favoritas
-                  </label>
+                  <label className="font-serif text-lg" style={{ color: '#4A5D4F' }}>Citações Favoritas</label>
                 </div>
                 {isEditing ? (
                   <textarea
@@ -226,12 +254,7 @@ export default function InnerGardenPage() {
                     onChange={(e) => setNotebook({...notebook, citacoes: e.target.value})}
                     placeholder="Copie aqui as frases do livro que mais te tocaram..."
                     className="w-full h-32 p-4 rounded-xl border-2 focus:outline-none resize-none transition-all"
-                    style={{ 
-                      backgroundColor: 'rgba(215,237,221,0.1)', 
-                      borderColor: '#B8D9C0', 
-                      color: '#171717',
-                      fontStyle: 'italic'
-                    }}
+                    style={{ backgroundColor: 'rgba(215,237,221,0.1)', borderColor: '#B8D9C0', color: '#171717', fontStyle: 'italic' }}
                   />
                 ) : (
                   <div className="p-4 rounded-xl min-h-[80px]" style={{ backgroundColor: 'rgba(215,237,221,0.1)' }}>
@@ -242,20 +265,16 @@ export default function InnerGardenPage() {
                 )}
               </div>
 
-              {/* Divisor elegante */}
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(184,217,192,0.4)' }} />
                 <span style={{ color: '#B8D9C0' }}>✿</span>
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(184,217,192,0.4)' }} />
               </div>
 
-              {/* Reflexões */}
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-3">
                   <span style={{ color: '#B8D9C0' }}>♡</span>
-                  <label className="font-serif text-lg" style={{ color: '#4A5D4F' }}>
-                    Minhas Reflexões
-                  </label>
+                  <label className="font-serif text-lg" style={{ color: '#4A5D4F' }}>Minhas Reflexões</label>
                 </div>
                 {isEditing ? (
                   <textarea
@@ -263,11 +282,7 @@ export default function InnerGardenPage() {
                     onChange={(e) => setNotebook({...notebook, reflexoes: e.target.value})}
                     placeholder="O que o livro te fez pensar? Como se conecta com sua vida?"
                     className="w-full h-32 p-4 rounded-xl border-2 focus:outline-none resize-none transition-all"
-                    style={{ 
-                      backgroundColor: 'rgba(215,237,221,0.1)', 
-                      borderColor: '#B8D9C0', 
-                      color: '#171717' 
-                    }}
+                    style={{ backgroundColor: 'rgba(215,237,221,0.1)', borderColor: '#B8D9C0', color: '#171717' }}
                   />
                 ) : (
                   <div className="p-4 rounded-xl min-h-[80px]" style={{ backgroundColor: 'rgba(215,237,221,0.1)' }}>
@@ -278,20 +293,16 @@ export default function InnerGardenPage() {
                 )}
               </div>
 
-              {/* Divisor elegante */}
               <div className="flex items-center gap-4 my-6">
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(184,217,192,0.4)' }} />
                 <span style={{ color: '#B8D9C0' }}>✿</span>
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(184,217,192,0.4)' }} />
               </div>
 
-              {/* Perguntas para o Encontro */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <span style={{ color: '#B8D9C0' }}>?</span>
-                  <label className="font-serif text-lg" style={{ color: '#4A5D4F' }}>
-                    Perguntas para o Encontro
-                  </label>
+                  <label className="font-serif text-lg" style={{ color: '#4A5D4F' }}>Perguntas para o Encontro</label>
                 </div>
                 {isEditing ? (
                   <textarea
@@ -299,11 +310,7 @@ export default function InnerGardenPage() {
                     onChange={(e) => setNotebook({...notebook, perguntas: e.target.value})}
                     placeholder="O que você gostaria de discutir com o grupo?"
                     className="w-full h-32 p-4 rounded-xl border-2 focus:outline-none resize-none transition-all"
-                    style={{ 
-                      backgroundColor: 'rgba(215,237,221,0.1)', 
-                      borderColor: '#B8D9C0', 
-                      color: '#171717' 
-                    }}
+                    style={{ backgroundColor: 'rgba(215,237,221,0.1)', borderColor: '#B8D9C0', color: '#171717' }}
                   />
                 ) : (
                   <div className="p-4 rounded-xl min-h-[80px]" style={{ backgroundColor: 'rgba(215,237,221,0.1)' }}>
@@ -314,6 +321,120 @@ export default function InnerGardenPage() {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Meu Histórico de Leituras */}
+        <div className="rounded-3xl p-8 mb-8" style={{ backgroundColor: 'rgba(215,237,221,0.15)' }}>
+          <h2 className="font-serif text-2xl mb-2 text-center" style={{ color: '#171717' }}>Meu Histórico de Leituras</h2>
+          <p className="text-center text-sm mb-8" style={{ color: 'rgba(23,23,23,0.5)' }}>Suas anotações guardadas para reler quando quiser</p>
+          
+          <div className="grid gap-4">
+            {booksHistory.map((book) => {
+              const monthData = history[book.month];
+              const isOpen = openFolder === book.month;
+              const hasNotes = hasContent(monthData);
+              
+              return (
+                <div key={book.month}>
+                  {/* Pasta fechada */}
+                  <button
+                    onClick={() => setOpenFolder(isOpen ? null : book.month)}
+                    className="w-full text-left transition-all hover:scale-[1.01]"
+                  >
+                    <div 
+                      className="relative rounded-2xl p-5 flex items-center gap-4"
+                      style={{ 
+                        backgroundColor: isOpen ? 'rgba(184,217,192,0.3)' : '#FFFEF9',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 0 0 1px rgba(184,217,192,0.2)',
+                      }}
+                    >
+                      {/* Ícone da pasta */}
+                      <div 
+                        className="w-14 h-12 rounded-lg flex items-center justify-center relative"
+                        style={{ backgroundColor: '#B8D9C0' }}
+                      >
+                        <div 
+                          className="absolute -top-1 left-1 w-6 h-2 rounded-t-md"
+                          style={{ backgroundColor: '#9BC5A3' }}
+                        />
+                        <span className="text-white text-lg">📖</span>
+                      </div>
+                      
+                      {/* Info */}
+                      <div className="flex-1">
+                        <h3 className="font-serif text-lg" style={{ color: '#4A5D4F' }}>{book.monthLabel}</h3>
+                        <p className="text-sm" style={{ color: 'rgba(74,93,79,0.6)' }}>{book.book}</p>
+                      </div>
+                      
+                      {/* Indicador */}
+                      <div className="flex items-center gap-2">
+                        {hasNotes && (
+                          <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'rgba(184,217,192,0.3)', color: '#4A5D4F' }}>
+                            Com anotações
+                          </span>
+                        )}
+                        <span style={{ color: '#B8D9C0', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                          ▼
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                  
+                  {/* Conteúdo da pasta aberta */}
+                  {isOpen && (
+                    <div 
+                      className="mt-2 ml-4 rounded-2xl p-6 border-l-4"
+                      style={{ 
+                        backgroundColor: '#FFFEF9',
+                        borderColor: '#B8D9C0',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      }}
+                    >
+                      {hasNotes ? (
+                        <>
+                          {monthData.citacoes && (
+                            <div className="mb-6">
+                              <p className="text-sm font-medium mb-2" style={{ color: '#4A5D4F' }}>❝ Citações Favoritas</p>
+                              <p className="italic text-sm" style={{ color: 'rgba(74,93,79,0.8)', whiteSpace: 'pre-wrap' }}>{monthData.citacoes}</p>
+                            </div>
+                          )}
+                          {monthData.reflexoes && (
+                            <div className="mb-6">
+                              <p className="text-sm font-medium mb-2" style={{ color: '#4A5D4F' }}>♡ Minhas Reflexões</p>
+                              <p className="text-sm" style={{ color: 'rgba(74,93,79,0.8)', whiteSpace: 'pre-wrap' }}>{monthData.reflexoes}</p>
+                            </div>
+                          )}
+                          {monthData.perguntas && (
+                            <div>
+                              <p className="text-sm font-medium mb-2" style={{ color: '#4A5D4F' }}>? Perguntas</p>
+                              <p className="text-sm" style={{ color: 'rgba(74,93,79,0.8)', whiteSpace: 'pre-wrap' }}>{monthData.perguntas}</p>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-sm text-center py-4" style={{ color: 'rgba(74,93,79,0.4)' }}>
+                          Nenhuma anotação salva para este mês ainda.
+                        </p>
+                      )}
+                      
+                     {/* Info do livro */}
+<div className="mt-6 pt-4 border-t" style={{ borderColor: 'rgba(184,217,192,0.3)' }}>
+  <a 
+    href={book.musicUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-xs hover:opacity-70 transition-all"
+    style={{ color: '#4A5D4F' }}
+  >
+    🎵 {book.music} → Ouvir no Spotify
+  </a>
+</div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
